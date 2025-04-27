@@ -3,15 +3,16 @@ module accelerator
 (
   input clk_i,
   input rst_ni,
-
+  input start_i,
   input curr_mem_we_i,
   input [7:0] curr_mem_waddr_i,
   input [7:0] curr_mem_wdata_i,
-
   input search_mem_we_i,
   input [9:0] search_mem_waddr_i,
-  input [7:0] search_mem_wdata_i
-);
+  input [7:0] search_mem_wdata_i,
+  output finish_o,
+  output busy_o
+  );
 
   logic [7:0] ref_raddr;
   logic [7:0] ref_data;
@@ -36,6 +37,9 @@ module accelerator
   control_unit cu (
     .clk_i(clk_i),
     .rst_ni(rst_ni),
+    .start_i(start_i),
+    .finish_o(finish_o),
+    .busy_o(busy_o),
     .smem_res_i(smem_res),
     .smem_req_o(smem_req),
     .ref_data_i(ref_data),
