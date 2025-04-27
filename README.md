@@ -10,9 +10,9 @@ Motion Estimation Accelerator
 
 <table align="center"><tr><td align="center" width="9999">
 
-<img src="docs/images/accelerator.png" align="center" width="900" alt="Project icon">
+<img src="docs/images/accelerator.png" align="center" width="900" alt="Block Diagram of The Motion Estimation Accelerator">
 
-Table: Block Diagram of The Motion Estimation Accelerator
+Block Diagram of The Motion Estimation Accelerator
 </td></tr></table>
 
 ### Scheduling
@@ -78,7 +78,7 @@ Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4013 clock cycle olacakt�
 
 <table align="center"><tr><td align="center" width="9999">
 
-<img src="docs/images/schedule.png" align="center" width="900" alt="Project icon">
+<img src="docs/images/schedule.jpeg" align="center" width="900" alt="Scheduling of The Motion Estimation Accelerator">
 
 Table: Scheduling of The Motion Estimation Accelerator
 </td></tr></table>
