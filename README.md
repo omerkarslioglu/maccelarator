@@ -6,6 +6,7 @@
 Motion Estimation Accelerator
 </td></tr></table>
 
+
 ### Accelerator Hardware
 
 <table align="center"><tr><td align="center" width="9999">
@@ -15,9 +16,10 @@ Motion Estimation Accelerator
 Figure-1: Block Diagram of The Motion Estimation Accelerator
 </td></tr></table>
 
+
 ### Scheduling
 
-Tasarladığım accelerator tüm process elementlerini parallel çalıştırarak optimum sürede tüm SAD değerlerini hesaplamaya başlamaktadır. Bu scheduling'in accelerator'da nasıl çalıştığını detaylı anlamak için Apendix-A'daki tabloyu inceleyiniz.
+Tasarladığım accelerator tüm process elementlerini parallel çalıştırarak optimum sürede tüm SAD değerlerini hesaplamaya başlamaktadır. Bu scheduling'in accelerator'da nasıl çalıştığını detaylı anlamak için **Apendix-A**'daki tabloyu inceleyiniz.
 
 Processing elementlerin her SAD hesaplaması process'i için başlangıç adresleri Figure-2'de şematik olarak verilmiştir. Başlangıçta PE0 ilk search memory'deki satır ilk sütundan yani s(0,0)'dan (bellekte 0. adres) başlayarak işleme başlayarak ilk 16x16'lık resmin SAD değerini hesaplamaya başlamaktadır. Aynı anda PE1 s(1,2)'den (bellekteki 33. adres) başlayarak bir diğer kare için SAD değerini hesaplmaktadır. Bu iki processing elements aynı referance (current) memory'den okuduğu değeri kullanır.
 
@@ -96,4 +98,5 @@ Table: Scheduling of The Motion Estimation Accelerator
 ---
 
 Ömer Karslıoğlu
+
 omerkarsliogluu@gmail.com
