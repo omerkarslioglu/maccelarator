@@ -6,6 +6,7 @@
 Motion Estimation Accelerator
 </td></tr></table>
 
+How does it work etc.
 
 ### Accelerator Hardware
 
@@ -16,6 +17,7 @@ Motion Estimation Accelerator
 Figure-1: Block Diagram of The Motion Estimation Accelerator
 </td></tr></table>
 
+Bu accelerator'da toplamda 8 adet SAD hesaplayan processing elements bulunmaktadır.
 
 ### Scheduling
 
@@ -69,6 +71,7 @@ Sonuç olarak Figure-2'de gösterildiği gibi processing elementler işlemlerine
 Figure-2: Start Addresses of Processing Elements
 </td></tr></table>
 
+31 x 31 boyutundaki bir resmin son bellek adresi 960'dır. Bu veri okunduğunda bütün SAD'lerin hesaplanması tamamlanmış olur. 
 
 ### Timing
 
@@ -84,6 +87,9 @@ Yani iki satırdaki processlerin tamamının bitmesi bitmesi yaklaşık 512 cloc
 Toplamda 31x31'lik bir resim için 16 satır başlangıç satırı olacaktır. Her iki satır paralel olarak hesaplanmaktadır.
 
 Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4013 clock cycle olacaktır.
+
+
+### Verification
 
 
 #### Appendix-A
