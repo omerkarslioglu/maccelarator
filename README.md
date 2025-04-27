@@ -12,13 +12,14 @@ Motion Estimation Accelerator
 
 <img src="docs/images/accelerator.png" align="center" width="900" alt="Block Diagram of The Motion Estimation Accelerator">
 
-Block Diagram of The Motion Estimation Accelerator
+Figure-1: Block Diagram of The Motion Estimation Accelerator
 </td></tr></table>
 
 ### Scheduling
 
 Tasarladığım accelerator tüm process elementlerini parallel çalıştırarak optimum sürede tüm SAD değerlerini hesaplamaya başlamaktadır. Bu scheduling'in accelerator'da nasıl çalıştığını detaylı anlamak için Apendix-A'daki tabloyu inceleyiniz.
-Başlangıçta PE0 ilk search memory'deki satır ilk sütundan yani s(0,0)'dan (bellekte 0. adres) başlayarak işleme başlayarak ilk 16x16'lık resmin SAD değerini hesaplamaya başlamaktadır. Aynı anda PE1 s(1,2)'den (bellekteki 33. adres) başlayarak bir diğer kare için SAD değerini hesaplmaktadır. Bu iki processing elements aynı referance (current) memory'den okuduğu değeri kullanır.
+
+Processing elementlerin her SAD hesaplaması process'i için başlangıç adresleri Figure-2'de şematik olarak verilmiştir. Başlangıçta PE0 ilk search memory'deki satır ilk sütundan yani s(0,0)'dan (bellekte 0. adres) başlayarak işleme başlayarak ilk 16x16'lık resmin SAD değerini hesaplamaya başlamaktadır. Aynı anda PE1 s(1,2)'den (bellekteki 33. adres) başlayarak bir diğer kare için SAD değerini hesaplmaktadır. Bu iki processing elements aynı referance (current) memory'den okuduğu değeri kullanır.
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -56,7 +57,16 @@ Table: Sets of Search Memory Read Ports
 
 PE0 ve PE1 kendi karelerinde ilk satır işlemini bitirdikten sonra search memory'nin diğer iki portundan okuma yapacaktır. Buraya kadar search memory'den sadece iki port (yani 0. set) kullanılmıştı. Fakat şimdi 4 port kullanma durumu ortaya çıktı. 0. grup PE'ler 1. set'den okuma yaparken diğer set'ler 0. portlardan okumaya devam edeceklerdir. Diğer PE'lerde ilk satır işlemini bitirene kadar bu 4 port okuma işlemi devam eder ve sonrasında tekrar iki port okuma durumu oluşur. Bu durumda sadece 1. set'den okunur. Gene PE'lerin satır işlemleri tamamlandığında 0 set aktif olur. Bu işlem bu şekilde devam eder.
 
-PE elementleri işlemlerini tamamladığında aynı satırda bir sonraki karelerinde işlemlerine başlarlar. Bu duruma second process in same row (SPISR) durumu diyorum. PE0 ilk SPISR durumuna geçtiğinde s(0,8) (bellekte 8. adresten) (başlangıç adresi + process elements no'dan) işleme başlar. PE1 SPISR durumunda s(1,9) (bellekte 40. adresten) işleme başlar. Bir diğer örnek olarak SPISR durumunda olan PE5 ise s(1,13) (bellekte 43. adresten) işleme başlar. Daha deminki gibi tüm PE'ler kendi karelerinde SAD hesaplamalarını gerçekleştirirler. 
+PE elementleri işlemlerini tamamladığında aynı satırda bir sonraki karelerinde işlemlerine başlarlar. Bu duruma second process in same row (SPISR) durumu diyelim. PE0 ilk SPISR durumuna geçtiğinde s(0,8) (bellekte 8. adresten) (başlangıç adresi + process elements no'dan) işleme başlar. PE1 SPISR durumunda s(1,9) (bellekte 40. adresten) işleme başlar. Bir diğer örnek olarak SPISR durumunda olan PE5 ise s(1,13) (bellekte 43. adresten) işleme başlar. Daha deminki gibi tüm PE'ler kendi karelerinde SAD hesaplamalarını gerçekleştirirler.
+Sonuç olarak Figure-2'de gösterildiği gibi processing elementler işlemlerine başlar ve tamamlarlar.
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/start_points_of_pes.png" align="center" width="900" alt="Start Addresses of Processing Elements">
+
+Figure-2: Start Addresses of Processing Elements
+</td></tr></table>
+
 
 ### Timing
 
