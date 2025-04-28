@@ -4,9 +4,9 @@
 # MAcelarator
 
 Motion Estimation Accelerator
-</td></tr></table>
 
-31 x 31'lik bir görselde 16 x 16'lık resmi optimal sürede SAD hesaplamalarını gerçekleştirerek arayan devredir. Bir execution işleminde toplamda 128 SAD hesaplamasını **Scheduling** kısmında bahsettiğim yöntem ile her biri paralel çalışan 8 adet processing elements ile 4102 clock periyodu süresinde tamamlanmasını sağlamaktadır.
+31 x 31'lik bir görselde 16 x 16'lık resmi optimal sürede SAD hesaplamalarını gerçekleştirerek arayan devredir. Bir execution işleminde toplamda 128 SAD hesaplamasını **scheduling** kısmında bahsettiğim yöntem ile her biri paralel çalışan 8 adet processing elements ile 4102 clock periyodu süresinde tamamlanmasını sağlamaktadır.
+</td></tr></table>
 
 ### About Motion Estimation 
 
