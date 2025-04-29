@@ -39,7 +39,7 @@ module tb_accelerator;
     @(posedge clk);
     start <= 0;
     
-    repeat (254) @(posedge clk) if (dut.cu.accum[1] != 0) $error("Error!");
+    repeat (254) @(posedge clk) if (dut.cu.accum[1] != 0) $error("Error! time = %0t, accum[1] = %0d", $time, dut.cu.accum[1]); 
 
     #100000;
     $finish;

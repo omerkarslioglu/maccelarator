@@ -18,7 +18,7 @@ module curr_mem
 
   initial begin
     initial_file =  $fopen(RImgMemPath, "r");
-    if (!initial_file) $error("[ERROR-01] IN MEMORY - Input file was not opened!"); // comment in to sythesis
+    // if (!initial_file) $error("[ERROR-01] IN MEMORY - Input file was not opened!"); // comment in to sythesis
     $readmemh(RImgMemPath, mem); // load image
     for (int i = 0; i < 5; i++) begin // check mem
       $display("memory[%0d] = %h", i, mem[i]);

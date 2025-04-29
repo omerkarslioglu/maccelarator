@@ -3,10 +3,12 @@
 
 # MAcelarator
 
-Motion Estimation Accelerator
+MAccelerator is high performance motion estimation accelerator hardware.
 </td></tr></table>
 
-How does it work etc.
+31 x 31'lik bir görselde 16 x 16'lık resmi optimal sürede SAD hesaplamalarını gerçekleştirerek arayan devredir. Bir execution işleminde toplamda 128 SAD hesaplamasını **scheduling** kısmında bahsettiğim yöntem ile her biri paralel çalışan 8 adet processing elements ile 4102 clock periyodu süresinde tamamlanmasını sağlamaktadır.
+
+### About Motion Estimation 
 
 ### Accelerator Hardware
 
@@ -17,7 +19,13 @@ How does it work etc.
 Figure-1: Block Diagram of The Motion Estimation Accelerator
 </td></tr></table>
 
-Bu accelerator'da toplamda 8 adet SAD hesaplayan processing elements bulunmaktadır.
+Bu accelerator'da toplamda 8 adet SAD hesaplayan processing elements bulunmaktadır. Search memory'de 4 adet read portu, referans (veya current) memory'de 1 adet read portu bulunmaktadır. Her iki memory'nin de 1 adet write port'u bulunmaktadır.
+
+Accelerator process'e başladığında search memory'den her zaman 4 portlu okuma yapmaz, çoğu zaman 2 portu kullanır, tüm processlerin yaklaşık %37,5'inde 4 portlu okuma aynı anda yapılır. Bu durumu anlamak için **Scheduling** kısmını ve **Appendix-A** kısmını incelemenizi tavsiye ederim. Bu portlardan hangilerinin kullanılacağı block diyagramda gösterildiği gibi mux'lar ile seçilir.
+
+Tüm scheduling işlemlerini ve memory reading adreslerinin belirlenmesini control unit halletmektedir.
+
+Görsellerin/matrix'lerin bellekte nasıl göründüğünü anlamak için **Figure-2**'yi incelemenizi tavsiye ederim.
 
 ### Scheduling
 
@@ -71,7 +79,7 @@ Sonuç olarak Figure-2'de gösterildiği gibi processing elementler işlemlerine
 Figure-2: Start Addresses of Processing Elements
 </td></tr></table>
 
-31 x 31 boyutundaki bir resmin son bellek adresi 960'dır. Bu veri okunduğunda bütün SAD'lerin hesaplanması tamamlanmış olur. 
+31 x 31 boyutundaki bir resmin son bellek adresi 960'dır. Bu veri search memory'den okunduğunda bütün SAD'lerin hesaplanması tamamlanmış olur. 
 
 ### Timing
 
@@ -86,8 +94,7 @@ Aynı anda bir alt satırdan başlayan processlerde tamamlanacaktır.
 Yani iki satırdaki processlerin tamamının bitmesi bitmesi yaklaşık 512 clock cyle periyodu sürmektedir (system load süresi dışında). 
 Toplamda 31x31'lik bir resim için 16 satır başlangıç satırı olacaktır. Her iki satır paralel olarak hesaplanmaktadır.
 
-Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4013 clock cycle olacaktır.
-
+Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4102 clock cycle olacaktır.
 
 ### Verification
 
@@ -101,7 +108,14 @@ Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4013 clock cycle olacakt�
 Table: Scheduling of The Motion Estimation Accelerator
 </td></tr></table>
 
----
+#### Future Works:
+1. Search Image ve Reference Image boyutlarının parametrik yapılabilir.
+2. Processing elements sayısı parametrik yapılabilir.
+3. Konfigrasyon register'i eklenebilir, bu register ile aynı anda çalışacak olan processing element'lerin sayısı belirlenebilir, start sinyali buradan set edilebilir.
+4. BUS (AXI vb.) protokol arayüzü eklenebilir.
+5. Accelerator verilerini DDR bellekten çekmesi sağlanabilir.
+6. ASIC sentezi yapılabilir.
+
 
 Ömer Karslıoğlu
 
