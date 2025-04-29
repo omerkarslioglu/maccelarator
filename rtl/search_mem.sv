@@ -2,7 +2,6 @@ module search_mem
   import acc_pkg::*;
 (
   input clk_i,
-  input we_i,
   input smem_req_t mem_req_i,
   output smem_res_t mem_res_o
 );
@@ -17,7 +16,7 @@ module search_mem
 
   initial begin
     initial_file =  $fopen(SImgMemPath, "r");
-    if (!initial_file) $error("[ERROR-01] IN MEMORY - Input file was not opened!"); // comment in to sythesis
+    // if (!initial_file) $error("[ERROR-01] IN MEMORY - Input file was not opened!"); // comment in to sythesis
     $readmemh(SImgMemPath, mem); // load image
     for (int i = 0; i < 5; i++) begin // check mem
       $display("memory[%0d] = %h", i, mem[i]);

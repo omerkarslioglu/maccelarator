@@ -18,6 +18,7 @@ module accelerator
   logic [7:0] ref_data;
   smem_res_t smem_res;
   smem_req_t smem_req;
+  logic [SMemReadPortNum-1:0][9:0] smem_raddr;
 
   curr_mem c_mem (
     .clk_i(clk_i),
@@ -41,9 +42,16 @@ module accelerator
     .finish_o(finish_o),
     .busy_o(busy_o),
     .smem_res_i(smem_res),
-    .smem_req_o(smem_req),
+    .smem_raddr_o(smem_raddr),
     .ref_data_i(ref_data),
     .ref_raddr_o(ref_raddr)
   );
+
+  always_comb begin
+    foreach (smem_raddr[i]) smem_req.raddr[i] = smem_raddr[i];
+    smem_req.waddr = search_mem_waddr_i;
+    smem_req.wdata = search_mem_wdata_i;
+    smem_req.write = search_mem_we_i;
+  end 
 
 endmodule
