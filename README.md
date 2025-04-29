@@ -96,6 +96,7 @@ Toplamda 31x31'lik bir resim için 16 satır başlangıç satırı olacaktır. H
 
 Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4102 clock cycle olacaktır.
 
+
 ### Verification
 
 
@@ -116,6 +117,7 @@ Table: Scheduling of The Motion Estimation Accelerator
 5. Accelerator verilerini DDR bellekten çekmesi sağlanabilir.
 6. ASIC sentezi yapılabilir.
 
+---
 
 Ömer Karslıoğlu
 
