@@ -3,11 +3,11 @@ package acc_pkg;
   parameter SImgSize = 31; // Search Image Size
   parameter RImgSize = 16; // Reference Image Size
 
-  // localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/imgages/ref_image.txt";
-  // localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/imgages/search_image.txt";
+  // localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/images/ref_image.txt";
+  // localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/images/search_image.txt";
 
-  localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/reference.txt";
-  localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/search.txt";
+   localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/reference.txt";
+   localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/search.txt";
 
   localparam SMemReadPortNum = 4; // set0: 0-1, set1: 2-3 
 

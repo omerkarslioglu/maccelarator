@@ -43,6 +43,8 @@ module control_unit
   logic               [9:                    0] next_raddr_start_point_pe1;
   logic               [9:                    0] next_raddr_start_point_pe0_buff;
   logic               [9:                    0] next_raddr_start_point_pe1_buff;
+  logic               [9:                    0] next_raddr_start_point_pe0_buff2;
+  logic               [9:                    0] next_raddr_start_point_pe1_buff2;
   logic                                         next_second_process_ior; // second process in one row
   logic                                         next_pe_rst                     [             PeNum];
   logic                                         reset_addrs;
@@ -74,6 +76,8 @@ module control_unit
   logic               [9:                    0] raddr_start_point_pe1;
   logic               [9:                    0] raddr_start_point_pe0_buff;
   logic               [9:                    0] raddr_start_point_pe1_buff;
+  logic               [9:                    0] raddr_start_point_pe0_buff2;
+  logic               [9:                    0] raddr_start_point_pe1_buff2;
   logic               [9:                    0] raddr_start_row_pe0;
   logic               [9:                    0] raddr_start_row_pe1;
   logic               [16:                   0] accum                           [             PeNum];
@@ -111,6 +115,7 @@ module control_unit
     next_raddr_start_point_pe1_buff = raddr_start_point_pe1_buff;
     next_min_sad = min_sad_o.sad;
     next_first_sad_load = first_sad_load;
+    reset_addrs = 0;
 
     foreach (accum[i]) new_sads.sad[i] = accum[i];
     foreach (pe_rst[i]) next_pe_rst[i] = pe_rst[i];
@@ -148,6 +153,8 @@ module control_unit
       next_raddr_start_point_pe1 = SImgSize + 1;
       next_raddr_start_point_pe0_buff = 0;
       next_raddr_start_point_pe1_buff = 0;
+      next_raddr_start_point_pe0_buff2 = 0;
+      next_raddr_start_point_pe1_buff2 = 0;
       next_saddr_set_switch_cntr = 0;
       next_search_raddr[0] = 0;
       next_search_raddr[1] = SImgSize + 1; // 'd32 = s(1,1) 
@@ -159,6 +166,8 @@ module control_unit
       foreach (sads.sad[i]) next_sads = 0;
       busy = !start_q & start_i;
       next_first_sad_load = busy;
+      next_min_sad.sad = 0;
+      next_min_sad.addr = 0;
     end else begin // EXECUTION STATE
       if (saddr_set_switch_cntr == 5) begin
         next_saddr_set_switch_cntr++;
@@ -189,6 +198,8 @@ module control_unit
         next_raddr_start_point_pe1 = !second_process_ior ? smem_raddr_o[1] + PeNum : smem_raddr_o[1] + PeNum + SImgSize - 1 + (SImgSize + 1) / 2; // if same process element down row, it must start at two bottom rows according to scheduling 
         next_raddr_start_point_pe0_buff = raddr_start_point_pe0;
         next_raddr_start_point_pe1_buff = raddr_start_point_pe1;
+        next_raddr_start_point_pe0_buff2 = raddr_start_point_pe0_buff; 
+        next_raddr_start_point_pe1_buff2 = raddr_start_point_pe1_buff; 
         next_ref_raddr++;
         next_compare_sad_start = 0;
       end else if (ref_raddr_o != RImgLastAddr) begin
@@ -209,7 +220,7 @@ module control_unit
 
       next_first_sad_load = compare_sad_start_q7 ? 0 : next_first_sad_load;
 
-      next_sads = compare_sad (first_sad_load, sads, new_sads, pe_group_id, compare_sad_flag, raddr_start_point_pe0_buff, raddr_start_point_pe1_buff); 
+      next_sads = compare_sad(first_sad_load, sads, new_sads, pe_group_id, compare_sad_flag, raddr_start_point_pe0_buff2, raddr_start_point_pe1_buff2); 
       next_min_sad = determine_min_sad(next_sads);
 
       for (int i = 2; i < PeNum; i++) next_pe_rst[i] = pe_rst_q[i-2]; // PE reset signals are delayed except PE0 & PE1
@@ -259,6 +270,8 @@ module control_unit
       raddr_start_point_pe1 <= SImgSize + 1;
       raddr_start_point_pe0_buff <= 0;
       raddr_start_point_pe1_buff <= 0;
+      raddr_start_point_pe0_buff2 <= 0;
+      raddr_start_point_pe1_buff2 <= 0;
       saddr_set_switch_cntr <= 0;
       smem_raddr_o[0] <= 0;
       smem_raddr_o[1] <= SImgSize + 1; // 'd32 = s(1,1) 
@@ -300,6 +313,8 @@ module control_unit
       raddr_start_point_pe1 <= next_raddr_start_point_pe1;
       raddr_start_point_pe0_buff <= next_raddr_start_point_pe0_buff;
       raddr_start_point_pe1_buff <= next_raddr_start_point_pe1_buff;
+      raddr_start_point_pe0_buff2 <= next_raddr_start_point_pe0_buff2;
+      raddr_start_point_pe1_buff2 <= next_raddr_start_point_pe1_buff2;
       compare_sad_start <= next_compare_sad_start;
       compare_sad_start_q2 <= compare_sad_start;
       compare_sad_start_q3 <= compare_sad_start_q2;
@@ -373,18 +388,49 @@ module control_unit
     return compare ? last_sads : pre_last_sads;
   endfunction
 
+  // This function determines the minimum SAD value from the last SAD values.
   function automatic sad_t determine_min_sad (last_sads_t sads);
-    sad_t min_sad; 
-    for (int i = 1; i < PeNum - 1; i++) begin
-      if (sads.sad[i] < sads.sad[i-1]) begin
-        min_sad.sad = sads.sad[i];
-        min_sad.addr = sads.addr[i];
+    int lvl1_idx = 0;
+    int lvl2_idx = 0;
+
+    logic [16:0] min_sad_lvl1 [4];
+    logic [16:0] min_sad_lvl2 [2];
+    logic [9:0] min_sad_addr_lvl1 [4];
+    logic [9:0] min_sad_addr_lvl2 [2];
+
+    sad_t min_sad;
+
+    for (int i = 1; i < PeNum; i = i + 2) begin
+      if (sads.sad[i] <= sads.sad[i-1]) begin
+        min_sad_lvl1[lvl1_idx] = sads.sad[i];
+        min_sad_addr_lvl1[lvl1_idx] = sads.addr[i];
       end else begin
-        min_sad.sad = sads.sad[i-1];
-        min_sad.addr = sads.addr[i-1];
+        min_sad_lvl1[lvl1_idx] = sads.sad[i-1];
+        min_sad_addr_lvl1[lvl1_idx] = sads.addr[i-1];
       end
-      return min_sad;
+      lvl1_idx++;
     end
+    
+    for (int i = 1; i < lvl1_idx; i = i + 2) begin
+      if (min_sad_lvl1[i] <= min_sad_lvl1[i-1]) begin
+        min_sad_lvl2[lvl2_idx] = min_sad_lvl1[i];
+        min_sad_addr_lvl2[lvl2_idx] = min_sad_addr_lvl1[i];
+      end else begin
+        min_sad_lvl2[lvl2_idx] = min_sad_lvl1[i-1];
+        min_sad_addr_lvl2[lvl2_idx] = min_sad_addr_lvl1[i-1];
+      end
+      lvl2_idx++;
+    end
+
+    if (min_sad_lvl2[0] < min_sad_lvl2[1]) begin
+      min_sad.sad = min_sad_lvl2[0];
+      min_sad.addr = min_sad_addr_lvl2[0];
+    end else begin
+      min_sad.sad = min_sad_lvl2[1];
+      min_sad.addr = min_sad_addr_lvl2[1];
+    end
+
+    return min_sad;
   endfunction
 
 endmodule
