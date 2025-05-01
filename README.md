@@ -8,7 +8,16 @@ MAccelerator is high performance motion estimation accelerator hardware.
 
 31 x 31'lik bir görselde 16 x 16'lık resmi optimal sürede SAD hesaplamalarını gerçekleştirerek arayan devredir. Bir execution işleminde toplamda 128 SAD hesaplamasını **scheduling** kısmında bahsettiğim yöntem ile her biri paralel çalışan 8 adet processing elements ile 4102 clock periyodu süresinde tamamlanmasını sağlamaktadır.
 
-### About Motion Estimation 
+### Motion Estimation
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/motion_estimation_alg.png" align="center" width="900" alt="Block Matching Algorithm For Motion Estimation">
+
+Figure-1: Forumula of Block Matching Algorithm For Motion Estimation
+</td></tr></table>
+
+Bu tasarım yukarıdaki formül referans alınarak tasarlanmıştır. Motion estimation hakkında daha detaylı bir bilgi almak için [buraya](https://en.wikipedia.org/wiki/Block-matching_algorithm) bakabilirsiniz.
 
 ### Accelerator Hardware
 
@@ -16,7 +25,7 @@ MAccelerator is high performance motion estimation accelerator hardware.
 
 <img src="docs/images/accelerator.png" align="center" width="900" alt="Block Diagram of The Motion Estimation Accelerator">
 
-Figure-1: Block Diagram of The Motion Estimation Accelerator
+Figure-2: Block Diagram of The Motion Estimation Accelerator
 </td></tr></table>
 
 Bu accelerator'da toplamda 8 adet SAD hesaplayan processing elements bulunmaktadır. Search memory'de 4 adet read portu, referans (veya current) memory'de 1 adet read portu bulunmaktadır. Her iki memory'nin de 1 adet write port'u bulunmaktadır.
@@ -25,13 +34,13 @@ Accelerator process'e başladığında search memory'den her zaman 4 portlu okum
 
 Tüm scheduling işlemlerini ve memory reading adreslerinin belirlenmesini control unit halletmektedir.
 
-Görsellerin/matrix'lerin bellekte nasıl göründüğünü anlamak için **Figure-2**'yi incelemenizi tavsiye ederim.
+Görsellerin/matrix'lerin bellekte nasıl göründüğünü anlamak için **Figure-3**'yi incelemenizi tavsiye ederim.
 
 ### Scheduling
 
 Tasarladığım accelerator tüm process elementlerini parallel çalıştırarak optimum sürede tüm SAD değerlerini hesaplamaya başlamaktadır. Bu scheduling'in accelerator'da nasıl çalıştığını detaylı anlamak için **Apendix-A**'daki tabloyu inceleyiniz.
 
-Processing elementlerin her SAD hesaplaması process'i için başlangıç adresleri Figure-2'de şematik olarak verilmiştir. Başlangıçta PE0 ilk search memory'deki satır ilk sütundan yani s(0,0)'dan (bellekte 0. adres) başlayarak işleme başlayarak ilk 16x16'lık resmin SAD değerini hesaplamaya başlamaktadır. Aynı anda PE1 s(1,2)'den (bellekteki 33. adres) başlayarak bir diğer kare için SAD değerini hesaplmaktadır. Bu iki processing elements aynı referance (current) memory'den okuduğu değeri kullanır.
+Processing elementlerin her SAD hesaplaması process'i için başlangıç adresleri Figure-3'de şematik olarak verilmiştir. Başlangıçta PE0 ilk search memory'deki satır ilk sütundan yani s(0,0)'dan (bellekte 0. adres) başlayarak işleme başlayarak ilk 16x16'lık resmin SAD değerini hesaplamaya başlamaktadır. Aynı anda PE1 s(1,2)'den (bellekteki 33. adres) başlayarak bir diğer kare için SAD değerini hesaplmaktadır. Bu iki processing elements aynı referance (current) memory'den okuduğu değeri kullanır.
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -70,13 +79,13 @@ Table: Sets of Search Memory Read Ports
 PE0 ve PE1 kendi karelerinde ilk satır işlemini bitirdikten sonra search memory'nin diğer iki portundan okuma yapacaktır. Buraya kadar search memory'den sadece iki port (yani 0. set) kullanılmıştı. Fakat şimdi 4 port kullanma durumu ortaya çıktı. 0. grup PE'ler 1. set'den okuma yaparken diğer set'ler 0. portlardan okumaya devam edeceklerdir. Diğer PE'lerde ilk satır işlemini bitirene kadar bu 4 port okuma işlemi devam eder ve sonrasında tekrar iki port okuma durumu oluşur. Bu durumda sadece 1. set'den okunur. Gene PE'lerin satır işlemleri tamamlandığında 0 set aktif olur. Bu işlem bu şekilde devam eder.
 
 PE elementleri işlemlerini tamamladığında aynı satırda bir sonraki karelerinde işlemlerine başlarlar. Bu duruma second process in same row (SPISR) durumu diyelim. PE0 ilk SPISR durumuna geçtiğinde s(0,8) (bellekte 8. adresten) (başlangıç adresi + process elements no'dan) işleme başlar. PE1 SPISR durumunda s(1,9) (bellekte 40. adresten) işleme başlar. Bir diğer örnek olarak SPISR durumunda olan PE5 ise s(1,13) (bellekte 43. adresten) işleme başlar. Daha deminki gibi tüm PE'ler kendi karelerinde SAD hesaplamalarını gerçekleştirirler.
-Sonuç olarak Figure-2'de gösterildiği gibi processing elementler işlemlerine başlar ve tamamlarlar.
+Sonuç olarak Figure-3'de gösterildiği gibi processing elementler işlemlerine başlar ve tamamlarlar.
 
 <table align="center"><tr><td align="center" width="9999">
 
 <img src="docs/images/start_points_of_pes.png" align="center" width="900" alt="Start Addresses of Processing Elements">
 
-Figure-2: Start Addresses of Processing Elements
+Figure-3: Start Addresses of Processing Elements
 </td></tr></table>
 
 31 x 31 boyutundaki bir resmin son bellek adresi 960'dır. Bu veri search memory'den okunduğunda bütün SAD'lerin hesaplanması tamamlanmış olur.
@@ -115,7 +124,46 @@ Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4102 clock cycle olacakt�
 
 ### Verification
 
-Bellek adreslerinin 
+Kendi belirlediğim datalar ile doldurulan ``.txt`` file'ını iki belleğe simülasyon ortamında yüklenmiştir. 
+
+Daha sonrasında buradaki adresslerin doğru zamanda, doğru gönderildiğini ve scheduling'in doğru çalıştığını görmekteyiz.
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/wave0.png" align="center" width="900" alt="Wave-1">
+
+Waveform-1
+</td></tr></table>
+
+Waveform-1'de adres başlangıçları 3.ns'de başlamıştır. 16 clock periyodu sonra searc memory'nin ikinci grup read port'u da aktif olmuştur.
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/wave1.png" align="center" width="900" alt="Wave-2">
+
+Waveform-2
+</td></tr></table>
+
+Waveform-2'de İlk SAD'ler 256 clock periyodu sonucunda hesaplandığı görülmektedir. Daha sonrasında aynı row içerisinde bir sağa kayarak PE'ler bir row'daki son işlemine başlar. 256 + 6 clock periyodu sonrasında 8 PE elementi arasından minumum SAD ve adresi output olarak dışarı verilmiştir.
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/wave2.png" align="center" width="900" alt="Wave-3">
+
+Waveform-3
+</td></tr></table>
+
+Waveform-3'de görüldüğü üzere PE'ler wave1'de ilk row'daki işlemlerini bitirince bir alt satıra geçerler ve uygun port'dan okumalar gerçekleştirilir.
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/wave3.png" align="center" width="900" alt="Wave-4">
+
+Waveform-4
+</td></tr></table>
+
+Tüm işlemler tamamlandığında minumum SAD değeri output olarak verilir ve işlemin toplamda 4102 cycle'da tamamlandığı doğrulanır (3 ns for reset/enable signals). Waveform-4'de gösterildiği üzere finish_o sinyali ile birlikte sonuç output'da doğru birşekilde çıkmıştır.
+
 
 #### Appendix-A
 
