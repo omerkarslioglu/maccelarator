@@ -79,7 +79,24 @@ Sonuç olarak Figure-2'de gösterildiği gibi processing elementler işlemlerine
 Figure-2: Start Addresses of Processing Elements
 </td></tr></table>
 
-31 x 31 boyutundaki bir resmin son bellek adresi 960'dır. Bu veri search memory'den okunduğunda bütün SAD'lerin hesaplanması tamamlanmış olur. 
+31 x 31 boyutundaki bir resmin son bellek adresi 960'dır. Bu veri search memory'den okunduğunda bütün SAD'lerin hesaplanması tamamlanmış olur.
+
+### Comparator
+
+<table align="center"><tr><td align="center" width="9999">
+
+<img src="docs/images/comparator.png" align="center" width="800" alt="Comparator Block Diagram">
+
+Figure-3: Comparator Block Diagram
+</td></tr></table>
+
+Min SAD'nin hesaplanması kontrol unit'de bulunan comparator sistemi ile yapılmaktadır. Her bir PE'nin harici bir kare için SAD hesaplanmaktadır. Her PE için de ayrıca bir comparator bulunmaktadır. 
+
+Bir karede SAD hesaplanması tamamlandığında bir önce ilgili PE için hesaplanmış SAD registerlardan okunup yeni SAD değeri ile kıyaslanır. 
+
+PE sayısı adetinde SAD registerlarda saklanır. Bu SAD'ler her PE'de hesaplanmış minumum SAD değerleridir. 
+
+Tüm SAD'ler hesaplandığında bu PE sayısı kadar SAD değerleri aşamalı olarak kıyaslanarak minumum değeri hesaplar. Bu durum **Figure-3**'de anlatılmıştır.
 
 ### Timing
 
@@ -96,9 +113,9 @@ Toplamda 31x31'lik bir resim için 16 satır başlangıç satırı olacaktır. H
 
 Bu yüzden toplam process süresi 512 * (16 / 2) + 6 = 4102 clock cycle olacaktır.
 
-
 ### Verification
 
+Bellek adreslerinin 
 
 #### Appendix-A
 
