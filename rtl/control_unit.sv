@@ -161,13 +161,13 @@ module control_unit
       next_search_raddr[2] = SImgSize; // 'd31 = s(1,0)
       next_search_raddr[3] = 2 * SImgSize + 1; // 'd63 = s(2,1)
       next_compare_sad_start = 0;
-      foreach (pe_rst[i]) next_pe_rst[i] = 1;
-      foreach (next_pe_set_select[i]) next_pe_set_select[i] = 0;
-      foreach (sads.sad[i]) next_sads = 0;
       busy = !start_q & start_i;
       next_first_sad_load = busy;
       next_min_sad.sad = 0;
       next_min_sad.addr = 0;
+      foreach (sads.sad[i]) next_sads = 0;
+      foreach (pe_rst[i]) next_pe_rst[i] = 1;
+      foreach (next_pe_set_select[i]) next_pe_set_select[i] = 0;
     end else begin // EXECUTION STATE
       if (saddr_set_switch_cntr == 5) begin
         next_saddr_set_switch_cntr++;
@@ -324,12 +324,12 @@ module control_unit
       compare_sad_start_q7 <= compare_sad_start_q6;
       pe_rst <= next_pe_rst;
       pe_rst_q <= pe_rst;
-      foreach (pe_set_select[i]) pe_set_select_q2[i] <= pe_set_select[i];
-      foreach (pe_set_select[i]) pe_set_select[i] <= next_pe_set_select[i];
-      foreach (smem_raddr_o[i]) smem_raddr_o[i] <= next_search_raddr[i];
       min_sad_o.sad <= next_min_sad.sad;
       min_sad_o.addr <= next_min_sad.addr;
       first_sad_load <= next_first_sad_load;
+      foreach (pe_set_select[i]) pe_set_select_q2[i] <= pe_set_select[i];
+      foreach (pe_set_select[i]) pe_set_select[i] <= next_pe_set_select[i];
+      foreach (smem_raddr_o[i]) smem_raddr_o[i] <= next_search_raddr[i];
     end
   end
 

@@ -12,7 +12,7 @@ MAccelerator is high performance motion estimation accelerator hardware.
 
 <table align="center"><tr><td align="center" width="9999">
 
-<img src="docs/images/motion_estimation_alg.png" align="center" width="900" alt="Block Matching Algorithm For Motion Estimation">
+<img src="docs/images/motion_estimation_alg.png" align="center" width="600" alt="Block Matching Algorithm For Motion Estimation">
 
 Figure-1: Forumula of Block Matching Algorithm For Motion Estimation
 </td></tr></table>
