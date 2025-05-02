@@ -6,8 +6,11 @@ package acc_pkg;
   // localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/images/ref_image.txt";
   // localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/images/search_image.txt";
 
-  localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/reference.txt";
-  localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/search.txt";
+  // localparam string RImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/reference.txt";
+  // localparam string SImgMemPath = "/home/omer/yl/ee565_soc_design/project2/sw/reference_design/search.txt";
+
+  localparam string RImgMemPath = "/image_path/name.txt";
+  localparam string SImgMemPath = "/image_path/name.txt";
 
   localparam SMemReadPortNum = 4; // set0: 0-1, set1: 2-3 
 

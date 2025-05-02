@@ -1,5 +1,5 @@
 <table align="center"><tr><td align="center" width="9999">
-<img src="docs/images/accelerator_icon.png" align="center" width="150" alt="Project icon">
+<img src="docs/images/accelerator_icon.png" align="center" width="120" alt="Project icon">
 
 # MAcelarator
 
@@ -14,18 +14,18 @@ Each processing element starts from a column. For example, PE0 (processing eleme
 
 The total processing time is equal to 4102 clock periods.
 
-### Motion Estimation
+### 1. Motion Estimation
 
 <table align="center"><tr><td align="center" width="9999">
 
-<img src="docs/images/motion_estimation_alg.png" align="center" width="300" alt="Block Matching Algorithm For Motion Estimation">
+<img src="docs/images/motion_estimation_alg.png" align="center" width="400" alt="Block Matching Algorithm For Motion Estimation">
 
 Figure-1: Forumula of Block Matching Algorithm For Motion Estimation
 </td></tr></table>
 
 This design is designed with reference to the above formula. You can also look at [here](https://en.wikipedia.org/wiki/Block-matching_algorithm) to get more information about motion estimation algorithm.
 
-### Accelerator Hardware
+### 2. Accelerator Hardware
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -42,7 +42,7 @@ The control unit handles all scheduling operations and determining memory readin
 
 I recommend you to examine **Figure-3** to understand how images/matrices are allocated in memory.
 
-### Scheduling
+### 3. Scheduling
 
 The accelerator I designed starts calculating all SAD values ​​in optimum time by running all process elements in parallel. To understand in detail how this scheduling works in the accelerator, please examine the table in **Appendix-A**.
 
@@ -105,7 +105,7 @@ Figure-3: The Start Addresses of Processing Elements
 
 The final memory address of a 31 x 31 image is 960. When this data is read from the search memory, the calculation of all SADs is completed.
 
-### Comparator
+### 4. Comparator
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -124,7 +124,7 @@ The number of SADs in the PE number is stored in the registers. These SADs are t
 
 When all SADs are calculated, the SAD values ​​as many as this number of PEs are compared in stages and the minimum value is calculated. This situation is explained in **Figure-3**.
 
-### Timing
+### 5. Timing
 
 Each SAD calculation takes 256 clock cycles.
 
@@ -144,7 +144,7 @@ In total, there will be 16 starting rows for a 31x31 image. Both rows are calcul
 
 Therefore, the total process time will be 512 * (16 / 2) + 6 = 4102 clock cycles.
 
-### Verification
+### 6. Verification
 
 The ``.txt`` file filled with the data I specified was loaded into two memories in the simulation environment.
 
@@ -186,6 +186,23 @@ Waveform-4
 
 When all operations are completed, the minimum SAD value is given as output and it is verified that the operation has been completed in 4102 cycles in total (3 ns for reset/enable signals). As shown in Waveform-4, the result is correctly output with the finish_o signal.
 
+### 7. Usage
+
+Just update the paths of the images in rtl/pkg/acc_pkg.sv
+
+```systemverilog
+  localparam string RImgMemPath = "/image_path/name.txt"; // reference (current) image path
+  localparam string SImgMemPath = "/image_path/name.txt"; // search image path
+```
+
+### 8. Future Works:
+1. Search Image and Reference Image dimensions can be made parametric.
+2. Number of processing elements can be made parametric.
+3. Configuration register can be added, the number of processing elements that will work simultaneously can be determined with this register, start signal can be set from here.
+4. BUS (AXI etc.) protocol interface can be added.
+5. Accelerator data can be pulled from DDR memory.
+6. ASIC synthesis can be done.
+
 
 #### Appendix-A
 
@@ -196,13 +213,7 @@ When all operations are completed, the minimum SAD value is given as output and 
 Table: Scheduling of The Motion Estimation Accelerator
 </td></tr></table>
 
-#### Future Works:
-1. Search Image and Reference Image dimensions can be made parametric.
-2. Number of processing elements can be made parametric.
-3. Configuration register can be added, the number of processing elements that will work simultaneously can be determined with this register, start signal can be set from here.
-4. BUS (AXI etc.) protocol interface can be added.
-5. Accelerator data can be pulled from DDR memory.
-6. ASIC synthesis can be done.
+
 
 ---
 
