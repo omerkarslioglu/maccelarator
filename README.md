@@ -134,7 +134,7 @@ According to scheduling, the loading/pipeline load time of all processes will ta
 
 In total, there will be 16 starting rows for a 31x31 image. Both rows are calculated in parallel.
 
-Therefore, the total process time will be 512 * (16 / 2) + 6 = **4102** clock cycles.
+Therefore, the total process time will be ``512 * (16 / 2) + 6 = 4102`` clock cycles.
 
 ### 6. Verification
 
