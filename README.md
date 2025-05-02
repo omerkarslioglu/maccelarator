@@ -128,21 +128,13 @@ When all SADs are calculated, the SAD values ​​as many as this number of PEs
 
 Each SAD calculation takes 256 clock cycles.
 
-There are 4 PEs working in parallel starting execution in a row, and 4 more PEs starting execution in the row below it.
+There are 4 PEs working in parallel starting execution in a row, and 4 more PEs starting execution in the row below it. In total, 8 PEs are working in parallel.
 
-In total, 8 PEs are working in parallel.
-
-According to scheduling, the loading/pipeline load time of all processes will take 6 clock cycles.
-
-It will take a total of 2 x 256 = 512 clock cycles for the processes that start in a row to finish.
-
-The processes that start in the row at the same time will also be completed.
-
-In other words, it takes approximately 512 clock cycles for all the processes in the two rows to finish (excluding the system load time).
+According to scheduling, the loading/pipeline load time of all processes will take 6 clock cycles. It will take a total of 2 x 256 = 512 clock cycles for the processes that start in a row to finish. The processes that start in the row at the same time will also be completed. In other words, it takes approximately 512 clock cycles for all the processes in the two rows to finish (excluding the system load time).
 
 In total, there will be 16 starting rows for a 31x31 image. Both rows are calculated in parallel.
 
-Therefore, the total process time will be 512 * (16 / 2) + 6 = 4102 clock cycles.
+Therefore, the total process time will be 512 * (16 / 2) + 6 = **4102** clock cycles.
 
 ### 6. Verification
 
@@ -157,7 +149,7 @@ Then we see that the addresses here are sent correctly at the right time and tha
 Waveform-1
 </td></tr></table>
 
-In Waveform-1, address starts started at the 3rd ns. After 16 clock periods, the second group read port of the searc memory became active.
+In **Waveform-1**, address starts started at the 3rd ns. After 16 clock periods, the second group read port of the searc memory became active.
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -166,7 +158,7 @@ In Waveform-1, address starts started at the 3rd ns. After 16 clock periods, the
 Waveform-2
 </td></tr></table>
 
-In Waveform-2, it is seen that the first SADs are calculated as a result of 256 clock periods. Then, PEs start their last process in a row by shifting to the right within the same row. After 256 + 6 clock periods, the minimum SAD is calculated among 8 PE elements.
+In **Waveform-2**, it is seen that the first SADs are calculated as a result of 256 clock periods. Then, PEs start their last process in a row by shifting to the right within the same row. After 256 + 6 clock periods, the minimum SAD is calculated among 8 PE elements.
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -175,7 +167,7 @@ In Waveform-2, it is seen that the first SADs are calculated as a result of 256 
 Waveform-3
 </td></tr></table>
 
-As seen in Waveform-3, when the PEs finish their operations in the first row, they move to the next row and readings are performed from the appropriate port.
+As seen in **Waveform-3**, when the PEs finish their operations in the first row, they move to the next row and readings are performed from the appropriate port.
 
 <table align="center"><tr><td align="center" width="9999">
 
@@ -184,7 +176,7 @@ As seen in Waveform-3, when the PEs finish their operations in the first row, th
 Waveform-4
 </td></tr></table>
 
-When all operations are completed, the minimum SAD value is given as output and it is verified that the operation has been completed in 4102 cycles in total (3 ns for reset/enable signals). As shown in Waveform-4, the result is correctly output with the finish_o signal.
+When all operations are completed, the minimum SAD value is given as output and it is verified that the operation has been completed in 4102 cycles in total (3 ns for reset/enable signals). As shown in **Waveform-4**, the result is correctly output with the finish_o signal.
 
 ### 7. Usage
 
