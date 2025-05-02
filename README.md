@@ -111,7 +111,7 @@ The final memory address of a 31 x 31 image is 960. When this data is read from 
 
 <img src="docs/images/comparator.png" align="center" width="800" alt="Comparator Block Diagram">
 
-Figure-3: Comparator Block Diagram
+Figure-4: Comparator Block Diagram
 </td></tr></table>
 
 The calculation of minimum SAD is calculated by comparing the comparator system in the control unit.
@@ -122,7 +122,7 @@ After a PE performs SAD calculation, it stores this SAD value in the register. W
 
 The number of SADs in the PE number is stored in the registers. These SADs are the minimum SAD values ​​calculated in each PE.
 
-When all SADs are calculated, the SAD values ​​as many as this number of PEs are compared in stages and the minimum value is calculated. This situation is explained in **Figure-3**.
+When all SADs are calculated, the SAD values ​​as many as this number of PEs are compared in stages and the minimum value is calculated. This situation is shown in **Figure-4**.
 
 ### 5. Timing
 
